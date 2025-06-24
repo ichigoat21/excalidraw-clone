@@ -1,0 +1,1 @@
+export const JWT_SIGN = "1221313"
