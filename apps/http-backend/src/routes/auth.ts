@@ -1,7 +1,8 @@
 import express, { Router } from "express"
 import { PrismaClient } from "@prisma/client"
 import jwt from "jsonwebtoken"
-import { JWT_SIGN } from "../config";
+import {JWT_SIGN} from "@repo/backend-common/config"
+import { userSchema } from "@repo/common/types"
 
 const userRouter : Router = express.Router()
 const prisma = new PrismaClient()
