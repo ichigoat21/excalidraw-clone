@@ -1,16 +1,16 @@
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken"
+import jwt, { JwtPayload } from "jsonwebtoken"
+import { JWT_SIGN } from "@repo/backend-common/config";
 
-interface customReq extends Request {
-    id : string
-}
 
-export const userMiddleware = (req : customReq, res : Response, next : NextFunction) => {
+export const userMiddleware = (req : Request, res : Response, next : NextFunction) => {
     try {
-   const headers = req.headers["Authorization"]
-   const decoded = jwt.decode(headers as string);
-   if (typeof decoded === "object" && decoded !== null && "id" in decoded) {
-    req.id = (decoded as jwt.JwtPayload).id;
+   const headers = req.headers["authorization"] ?? ''
+   const decoded = jwt.verify(headers, JWT_SIGN);
+   console.log(decoded)
+   if (decoded) {
+    req.id = (decoded as JwtPayload).userId;
+    console.log("passed")
     next();
   }} catch(e) {
     res.status(200).json({
