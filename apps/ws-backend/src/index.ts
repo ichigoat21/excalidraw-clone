@@ -4,6 +4,20 @@ import {JWT_SIGN} from "@repo/backend-common/config"
 const wss = new WebSocketServer({port : 8000})
 
 
+function checkUser(token : string) : string | null {
+    const decoded = jwt.verify(JWT_SIGN, token as string)
+
+    if (typeof(decoded) == "string"){
+        return null;
+    }
+
+    if (!decoded ||decoded.userId){
+       return null;
+    }
+    
+    return decoded.userId 
+}
+
 wss.on("connection", function connection(ws, request) {
     const url = request.url;
     if(!url){
@@ -13,10 +27,15 @@ wss.on("connection", function connection(ws, request) {
     const queryParams = new URLSearchParams(query) ;
     const token = queryParams.get('token')
 
-    const decoded = jwt.verify(JWT_SIGN, token as string)
-    if (!decoded ||(decoded as JwtPayload).id){
-       ws.close
-       return;
+    if (typeof(token) !== "string"){
+        return;
     }
-    
+    const userId = checkUser(token)
+
+    if(!userId){
+        ws.close()
+    }
+    ws.on("message", function message(){
+       ws.send("pong")
+    })
 })
