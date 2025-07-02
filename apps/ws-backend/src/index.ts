@@ -5,7 +5,7 @@ import {JWT_SIGN} from "@repo/backend-common/config"
 import {prisma} from "@repo/db-package/client"
 
 
-const wss = new WebSocketServer ({port : 8001})
+const wss = new WebSocketServer ({port : 8000})
 
 
 interface User {
@@ -80,6 +80,7 @@ wss.on("connection", function connection(ws, request) {
           if (parsedData.type === "chat") {
             const roomId = parsedData.roomId;
             const message = parsedData.message;
+
   
             users.forEach((user) => {
               if (user.room.includes(roomId)) {
