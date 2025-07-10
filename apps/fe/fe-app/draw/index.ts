@@ -1,3 +1,19 @@
+type Shape = {
+    type : "rect";
+    x : number,
+    y : number,
+    width : number,
+    height : number
+} | {
+    type : "circle",
+    x : number,
+    y : number,
+    radius : number
+}
+
+let existingShapes : Shape[] = [];
+
+
 export function initDraw(canvas : HTMLCanvasElement){
     const ctx = canvas.getContext("2d")
     if (!ctx){
@@ -17,16 +33,37 @@ export function initDraw(canvas : HTMLCanvasElement){
     })
     canvas.addEventListener("mouseup", (e)=> {
         clicked = false
+        existingShapes.push({
+            type : "rect",
+            x : startX,
+            y : startY,
+            width : e.clientX - startX,
+            height : e.clientY - startY
+        })
+        
     })
     canvas.addEventListener("mousemove", (e) => {
         if(clicked){
             const width = e.clientX - startX;
             const height = e.clientY - startY;
-            ctx.clearRect(0, 0, canvas.width, canvas.height)
-            ctx.fillStyle =  "rgba(0, 0, 0)"
-            ctx.fillRect(0, 0, canvas.width, canvas.height)
+            clearCanvas(existingShapes, canvas, ctx)
             ctx.strokeStyle =  "rgba(255, 255, 255)"
-            ctx.strokeRect(e.clientX, e.clientY, width, height)
+            ctx.strokeRect(startX, startY, width, height)
         }
     } )
+
+}
+
+
+function clearCanvas(existingShape : Shape[], canvas : HTMLCanvasElement, ctx : CanvasRenderingContext2D){
+         ctx.clearRect(0, 0, canvas.width, canvas.height);
+         ctx.fillStyle = "rgba(0, 0, 0)";
+         ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+         existingShapes.map((shape)=> {
+            if (shape.type === "rect"){
+                ctx.strokeStyle = "rgba(255,255,255)"
+                ctx.strokeRect(shape.x, shape.y, shape.width, shape.height)
+            }
+         })
 }
