@@ -1,3 +1,7 @@
+import axios from "axios";
+import { HTTP_BACKEND } from "../config/config";
+import { json } from "stream/consumers";
+
 type Shape = {
     type : "rect";
     x : number,
@@ -11,16 +15,20 @@ type Shape = {
     radius : number
 }
 
-let existingShapes : Shape[] = [];
 
 
-export function initDraw(canvas : HTMLCanvasElement){
+
+export async function initDraw(canvas : HTMLCanvasElement, roomId : string){
     const ctx = canvas.getContext("2d")
+    let existingShapes : Shape[] = await getExistingShapes(roomId);
     if (!ctx){
         return;
     }
+
     ctx.fillStyle =  "rgba(0, 0, 0)"
     ctx.fillRect(0, 0, canvas.width, canvas.height)
+    clearCanvas(existingShapes, canvas, ctx);
+    
 
     let clicked = false;
     let startX = 0;
@@ -60,10 +68,21 @@ function clearCanvas(existingShape : Shape[], canvas : HTMLCanvasElement, ctx : 
          ctx.fillStyle = "rgba(0, 0, 0)";
          ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-         existingShapes.map((shape)=> {
+         existingShape.map((shape)=> {
             if (shape.type === "rect"){
                 ctx.strokeStyle = "rgba(255,255,255)"
                 ctx.strokeRect(shape.x, shape.y, shape.width, shape.height)
             }
          })
+}
+
+async function getExistingShapes(roomId : string){
+         const response = await axios.get(`${HTTP_BACKEND}/chat/${roomId}`)
+         const messages = response.data.message;
+
+         const shapes = messages.map((shape : {message : string}) => {
+            const messageData = JSON.parse(shape.message)
+            return messageData;
+         })
+         return shapes
 }

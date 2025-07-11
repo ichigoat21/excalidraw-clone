@@ -1,4 +1,4 @@
-import express from "express"
+import express, { Router } from "express"
 import { roomSchema } from "@repo/common/types"
 import { prisma } from "@repo/db-package/client";
 
