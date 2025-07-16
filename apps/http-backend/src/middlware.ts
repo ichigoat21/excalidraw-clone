@@ -4,6 +4,7 @@ import { JWT_SIGN } from "@repo/backend-common/config";
 
 
 export const userMiddleware = (req : Request, res : Response, next : NextFunction) => {
+  console.log(req.headers)
     try {
    const headers = req.headers["authorization"] ?? ''
    const decoded = jwt.verify(headers, JWT_SIGN);

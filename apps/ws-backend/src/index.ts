@@ -5,7 +5,7 @@ import {JWT_SIGN} from "@repo/backend-common/config"
 import {prisma} from "@repo/db-package/client"
 
 
-const wss = new WebSocketServer ({port : 8000})
+const wss = new WebSocketServer ({port : 8080})
 
 
 interface User {
@@ -19,6 +19,7 @@ const users : User[] = []
 
 function checkUser(token : string) : string | null {
     const decoded = jwt.verify(token, JWT_SIGN)
+
 
     if (typeof(decoded) == "string"){
         return null;
@@ -47,7 +48,6 @@ wss.on("connection", function connection(ws, request) {
       }
   
       const userId = checkUser(token);
-      console.log(userId);
       if (!userId) {
         ws.close();
         return;
@@ -67,7 +67,7 @@ wss.on("connection", function connection(ws, request) {
           } else {
             parsedData = JSON.parse(data);
           }
-  
+          console.log(parsedData)
           if (parsedData.type === "join") {
             const user = users.find((u) => u.ws === ws);
             user?.room.push(parsedData.roomId);
@@ -79,15 +79,16 @@ wss.on("connection", function connection(ws, request) {
   
           if (parsedData.type === "chat") {
             const roomId = parsedData.roomId;
-            const message = parsedData.message;
-
+            const message = JSON.parse(parsedData.message);
+            const shape = message.shape
+            console.log(shape) 
   
             users.forEach((user) => {
               if (user.room.includes(roomId)) {
                 user.ws.send(
                   JSON.stringify({
                     type: "chat",
-                    message: message,
+                    message: shape,
                     roomId,
                   })
                 );
@@ -97,7 +98,7 @@ wss.on("connection", function connection(ws, request) {
             await prisma.chat.create({
               data: {
                 roomId: Number(roomId),
-                message,
+                message.shape,
                 userId,
               },
             });

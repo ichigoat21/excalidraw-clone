@@ -32,6 +32,7 @@ chatRouter.post("/room", async (req, res) => {
 
 chatRouter.get("/chat/:roomId", async (req, res)=> {
     const roomId = Number(req.params.roomId);
+
     const messages = await prisma.chat.findMany({
       where : {
         roomId : roomId
@@ -39,6 +40,7 @@ chatRouter.get("/chat/:roomId", async (req, res)=> {
         id : "desc"
       }, take : 1000
     })
+    console.log("Fetched messages for room:", roomId, messages);
     res.json({
       messages
     })

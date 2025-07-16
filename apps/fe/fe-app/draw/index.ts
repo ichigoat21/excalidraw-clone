@@ -1,6 +1,9 @@
 import axios from "axios";
 import { HTTP_BACKEND } from "../config/config";
-import { json } from "stream/consumers";
+import { useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { AnyCnameRecord } from "node:dns";
+
 
 type Shape = {
     type : "rect";
@@ -14,6 +17,8 @@ type Shape = {
     y : number,
     radius : number
 }
+
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwNGViMjdhNS0xMGQ3LTQ4YzMtYmM4Yi1hOGMzMmU3ZWE5ODkiLCJpYXQiOjE3NTI1ODkzMzl9.wJz0Hu3dc0pI_-rWEWTidoRgUjGXLsuYWfaPYx-qUj8"
 
 
 
@@ -31,8 +36,10 @@ export async function initDraw(canvas : HTMLCanvasElement, roomId : string, sock
 
     socket.onmessage = (event) => {
         const message = JSON.parse(event.data);
+        console.log(message)
         if (message.type == "chat"){
             const parsedShape = JSON.parse(message.message)
+            console.log(parsedShape)
             existingShapes.push(parsedShape)
             clearCanvas(existingShapes, canvas, ctx)
         }
@@ -59,7 +66,11 @@ export async function initDraw(canvas : HTMLCanvasElement, roomId : string, sock
         }
         existingShapes.push(shape)
         socket.send(JSON.stringify({
-            shape
+            type : "chat",
+            message : JSON.stringify({
+                shape
+            }),
+            roomId
         }))
     })
     canvas.addEventListener("mousemove", (e) => {
@@ -89,12 +100,17 @@ function clearCanvas(existingShape : Shape[], canvas : HTMLCanvasElement, ctx : 
 }
 
 async function getExistingShapes(roomId : string){
-         const response = await axios.get(`${HTTP_BACKEND}/chat/${roomId}`)
-         const messages = response.data.message;
-
-         const shapes = messages.map((shape : {message : string}) => {
-            const messageData = JSON.parse(shape.message)
-            return messageData;
+         const response = await axios.get(`${HTTP_BACKEND}/chat/chat/${roomId}`, {
+            headers : {
+                Authorization : token
+            }
+         })
+         const messages = response.data.messages;
+         console.log(messages)
+         const shapes = messages.map((message : any) => {
+            const parsed = JSON.parse(message.message)
+            const shape = parsed.shape
+            return shape;
          })
          return shapes
 }
