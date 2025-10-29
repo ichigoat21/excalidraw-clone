@@ -6,14 +6,31 @@ const wss = new WebSocketServer({
     port : 8080
 })
 
+const decoded = (token: string): string | null => {
+    try {
+      const decodedToken = jwt.verify(token, JWT_SECRET)
+  
+      if (typeof decodedToken === 'object' && 'id' in decodedToken) {
+        return (decodedToken as JwtPayload).id as string
+      }
+  
+      return null
+    } catch (err) {
+      return null
+    }
+  }
+
 wss.on('connection', function connection(ws, request) {
 
     const url = request.url;
     const queryParams = new URLSearchParams(url?.split('?')[1])
     const token = queryParams.get('token')
-    const decoded = jwt.verify(token as string, JWT_SECRET)
-
-    if(!decoded || !(decoded as JwtPayload).id){
+    if (!token){
+        ws.close()
+        return
+    }
+    const userAuthenticated = decoded(token)
+    if (!userAuthenticated){
         ws.close()
         return
     }
