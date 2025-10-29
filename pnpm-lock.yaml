@@ -93,6 +93,9 @@ importers:
       '@repo/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@repo/db-package':
+        specifier: workspace:*
+        version: link:../../packages/db-package
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
