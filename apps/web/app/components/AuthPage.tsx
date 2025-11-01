@@ -2,8 +2,12 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {Label} from "@/components/ui/label"
 
+interface loginProps {
+    isSignin : boolean
+}
 
-export default function Login() {
+
+export default function Login({isSignin} : loginProps) {
     return (
       <div className="bg-gradient-to-t from-zinc-900 to-zinc-100 h-screen w-screen flex justify-center items-center">
         <div className="flex flex-col gap-4 p-6 bg-white rounded-xl shadow-md w-full max-w-sm">
@@ -20,7 +24,7 @@ export default function Login() {
             </div>
           </div>
   
-          <Button className="w-full">Sign In</Button>
+          <Button className="w-full">{isSignin ? "Sign In" : "SignUp"}</Button>
         </div>
       </div>
     );
