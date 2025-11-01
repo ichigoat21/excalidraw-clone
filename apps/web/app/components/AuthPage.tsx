@@ -1,22 +1,28 @@
-import { Button } from "@repo/ui/button"
-import {Input} from "@repo/ui/input"
-
-const InputStyle = " px-4 py-3 rounded-xl bg-blue-50 text-gray-900 placeholder-gray-400 shadow-sm border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition";
-const ButtonStyle = " w-full px-4 py-3 rounded-xl bg-blue-600 text-white font-semibold flex items-center justify-center shadow-md hover:bg-blue-700 active:bg-blue-800 transition transform hover:scale-[1.02] active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-300";
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import {Label} from "@/components/ui/label"
 
 
-export default function AuthPage({isSignin} : {
-    isSignin : boolean
-}){
-    return <div className="bg-blue-200 h-screen w-screen flex justify-center items-center">
-        <div className="flex flex-col gap-2">
-            <div className="flex flex-col gap-1">
-            <Input classname={InputStyle} placeholder= "username" type="text"/>
-            <Input classname={InputStyle}  placeholder= 'password' type="text"/>
+export default function Login() {
+    return (
+      <div className="bg-gradient-to-t from-zinc-900 to-zinc-100 h-screen w-screen flex justify-center items-center">
+        <div className="flex flex-col gap-4 p-6 bg-white rounded-xl shadow-md w-full max-w-sm">
+          
+          <div className="grid w-full gap-4">
+            <div className="grid gap-1">
+              <Label htmlFor="username">Username</Label>
+              <Input id="username" />
             </div>
-            <div>
-            <Button className={ButtonStyle} isSignin ={isSignin}>{isSignin ? "Sign Up" : "Sign In"}</Button>
+  
+            <div className="grid gap-1">
+              <Label htmlFor="password">Password</Label>
+              <Input id="password" type="password" />
             </div>
+          </div>
+  
+          <Button className="w-full">Sign In</Button>
         </div>
-    </div>
-}
+      </div>
+    );
+  }
+  
