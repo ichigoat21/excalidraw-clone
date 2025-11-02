@@ -13,6 +13,10 @@ export default function RoomCanvas({roomId} : {
         const ws = new WebSocket(`${WS_URL}`)
         ws.onopen = () => {
             setSocket(ws)
+            ws.send(JSON.stringify({
+                type : "join",
+                roomId
+            }))
         }
     })
 
