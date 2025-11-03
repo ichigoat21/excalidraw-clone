@@ -16,6 +16,10 @@ roomRouter.post("/chat", async (req, res)=> {
             return
         }
         const userId = req.id
+        console.log(userId)
+        console.log(req.body)
+        console.log(parsedData)
+        console.log(typeof userId !== "string")
     
         if (typeof userId !== "string") {
             res.status(403).json({
@@ -63,3 +67,5 @@ roomRouter.get("/chat/:id", async (req, res) => {
         })
     }
 })
+
+export default roomRouter
