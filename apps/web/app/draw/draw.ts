@@ -17,70 +17,75 @@ type Shape = {
 
 
 
-export async function initDraw(canvas : HTMLCanvasElement, roomId : string, socket : WebSocket){
-    const ctx = canvas.getContext("2d")
-
-    let existingShape : Shape[] = await getExistingShapes(roomId)
-        
-            if (!ctx){
-                return
-            }
-
-            socket.onmessage = (event) => {
-                const message = JSON.parse(event.data);
-        
-                if (message.type == "chat") {
-                    const parsedShape = JSON.parse(message.message)
-                    existingShape.push(parsedShape.shape)
-                    clearCanvas(existingShape, canvas, ctx);
-                }
-            }
-
-
-            clearCanvas(existingShape, canvas, ctx);
-
-
-            let clicked = false
-            let startX = 0
-            let startY = 0
-
-            canvas.addEventListener("mousedown", (e)=> {
-                clicked = true 
-                startX = e.clientX
-                startY = e.clientY
-            })
-            canvas.addEventListener("mouseup", (e)=> {
-                const width = e.clientX - startX
-                const height = e.clientY - startY
-                clicked = false
-                const shape : Shape = {
-                    type : "rect",
-                    x : startX,
-                    y : startY,
-                    width,
-                    height
-                }
-                existingShape.push(shape)
-                console.log("hi")
-
-
-                socket.send(JSON.stringify({
-                type: "chat",
-                message: JSON.stringify({
-                shape
-                 }),
-                roomId
-              }))
-            })
-            
-            canvas.addEventListener("mousemove", (e)=> {
-                const width = e.clientX - startX
-                const height = e.clientY - startY
-                clearCanvas(existingShape, canvas, ctx)
-                ctx.strokeStyle = "rgba(255, 255, 255)"  
-                ctx.strokeRect(startX, startY, width, height )
-            })
-}
+  export async function initDraw(
+    canvas: HTMLCanvasElement,
+    roomId: string,
+    socket: WebSocket
+  ) {
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+  
+    let existingShape: Shape[] = await getExistingShapes(roomId);
+    clearCanvas(existingShape, canvas, ctx);
+  
+    let clicked = false;
+    let startX = 0;
+    let startY = 0;
+  
+    const handleMouseDown = (e: MouseEvent) => {
+      clicked = true;
+      startX = e.clientX;
+      startY = e.clientY;
+    };
+  
+    const handleMouseUp = (e: MouseEvent) => {
+      if (!clicked) return;
+      clicked = false;
+      const width = e.clientX - startX;
+      const height = e.clientY - startY;
+      const shape: Shape = { type: "rect", x: startX, y: startY, width, height };
+      existingShape.push(shape);
+      clearCanvas(existingShape, canvas, ctx);
+      socket.send(
+        JSON.stringify({
+          type: "chat",
+          message: JSON.stringify({ shape }),
+          roomId,
+        })
+      );
+    };
+  
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!clicked) return;
+      const width = e.clientX - startX;
+      const height = e.clientY - startY;
+      clearCanvas(existingShape, canvas, ctx);
+      ctx.strokeStyle = "rgba(255, 255, 255)";
+      ctx.strokeRect(startX, startY, width, height);
+    };
+  
+    const handleMessage = (event: MessageEvent) => {
+      const message = JSON.parse(event.data);
+      if (message.type === "chat") {
+        const parsedShape = JSON.parse(message.message);
+        existingShape.push(parsedShape.shape);
+        clearCanvas(existingShape, canvas, ctx);
+      }
+    };
+  
+    socket.addEventListener("message", handleMessage);
+    canvas.addEventListener("mousedown", handleMouseDown);
+    canvas.addEventListener("mouseup", handleMouseUp);
+    canvas.addEventListener("mousemove", handleMouseMove);
+  
+    return () => {
+      socket.removeEventListener("message", handleMessage);
+      canvas.removeEventListener("mousedown", handleMouseDown);
+      canvas.removeEventListener("mouseup", handleMouseUp);
+      canvas.removeEventListener("mousemove", handleMouseMove);
+    };
+  }
+  
 
 function clearCanvas(existingShape : Shape[], canvas : HTMLCanvasElement, ctx : CanvasRenderingContext2D){
     ctx.clearRect(0, 0, canvas.width, canvas.height)

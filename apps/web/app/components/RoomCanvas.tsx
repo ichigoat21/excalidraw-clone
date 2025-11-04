@@ -18,6 +18,10 @@ export default function RoomCanvas({roomId} : {
                 roomId
             }))
         }
+        return () => {
+            ws.close()
+            setSocket(null)
+          }
     }, [])
 
     if(!socket){

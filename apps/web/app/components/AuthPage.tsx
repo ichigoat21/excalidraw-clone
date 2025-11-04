@@ -1,6 +1,12 @@
+"use client"
+
+
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {Label} from "@/components/ui/label"
+import { useRef } from "react"
+import axios from "axios"
+import { HTTP_BACKEND } from "../config"
 
 interface loginProps {
     isSignin : boolean
@@ -8,6 +14,26 @@ interface loginProps {
 
 
 export default function Login({isSignin} : loginProps) {
+  const usernameRef = useRef<HTMLInputElement | null>(null)
+  const passwordRef =  useRef<HTMLInputElement | null>(null)
+  const emailRef =  useRef<HTMLInputElement | null>(null)
+
+
+  async function authHandler(){
+    const username = usernameRef.current?.value
+    const password = passwordRef.current?.value
+    const email = emailRef.current?.value
+
+    if(!isSignin){
+      const response = axios.post(`${HTTP_BACKEND}/users/signup`, {
+        username,
+        password,
+        email
+      })
+      const user = (await response).data.userId
+      alert(user)
+    }
+  }
     return (
       <div className="bg-gradient-to-t from-zinc-900 to-zinc-100 h-screen w-screen flex justify-center items-center">
         <div className="flex flex-col gap-4 p-6 bg-white rounded-xl shadow-md w-full max-w-sm">
@@ -15,16 +41,20 @@ export default function Login({isSignin} : loginProps) {
           <div className="grid w-full gap-4">
             <div className="grid gap-1">
               <Label htmlFor="username">Username</Label>
-              <Input id="username" />
+              <Input ref={usernameRef} id="username" />
             </div>
   
             <div className="grid gap-1">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" />
+              <Input ref={passwordRef} id="password" type="password" />
+            </div>
+            <div className="grid gap-1">
+              <Label htmlFor="email">email</Label>
+              <Input ref={emailRef} id="email" type="email" />
             </div>
           </div>
   
-          <Button className="w-full">{isSignin ? "Sign In" : "SignUp"}</Button>
+          <Button onClick={authHandler} className="w-full">{isSignin ? "Sign In" : "SignUp"}</Button>
         </div>
       </div>
     );
