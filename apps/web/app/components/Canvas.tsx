@@ -7,14 +7,17 @@ export default function Canvas({roomId, socket} : {roomId : string, socket : Web
     const canvasRef = useRef<HTMLCanvasElement>(null)
 
     useEffect(() => {
-        if (canvasRef.current){
-            initDraw(canvasRef.current, roomId, socket)
+        if (canvasRef.current) {
+          const canvas = canvasRef.current
+          canvas.width = window.innerWidth
+          canvas.height = window.innerHeight
+          initDraw(canvas, roomId, socket)
         }
-    }, [canvasRef]);
+      }, [canvasRef])
 
   
 
     return <div>
-        <canvas ref={canvasRef} height={1000} width={2000}></canvas>
+        <canvas ref={canvasRef}></canvas>
     </div>
 }
