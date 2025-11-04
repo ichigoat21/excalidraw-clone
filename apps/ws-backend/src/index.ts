@@ -34,6 +34,7 @@ wss.on('connection', function connection(ws, request) {
     const url = request.url;
     const queryParams = new URLSearchParams(url?.split('?')[1])
     const token = queryParams.get('token')
+    console.log(token)
     if (!token){
         ws.close()
         return
@@ -53,32 +54,38 @@ wss.on('connection', function connection(ws, request) {
 
 
     ws.on('message', async function message(data){
+        let parsedData
         if (typeof data !== 'string'){
-            ws.close()
-            return
+            parsedData = JSON.parse(data.toString())
+        } else {
+            parsedData = JSON.parse(data)
         }
-        const parsedData = JSON.parse(data)
+        
+        console.log(parsedData)
         if(parsedData.type === "join"){
             const user = users.find(u => u.ws === ws)
         }
         if (parsedData.type === "leave"){
             const user = users.filter(u => u.ws === ws)
         }
-        if (parsedData.type === "chat"){
+        if (parsedData.type === "chat") {
             users.forEach(user => {
                 user.ws.send(JSON.stringify({
                     type : "chat",
                     message : parsedData.message,
                     rooms : parsedData.roomId
                 }))
-            })
+            });
+        
+            await client.chat.create({
+                data : {
+                    message : parsedData.message,
+                    roomId : Number(parsedData.roomId),
+                    userId : userId
+                }
+            });
         }
-        await client.chat.create({
-            data : {
-                message : parsedData.message,
-                roomId : Number(parsedData.roomId),
-                userId : userId
-            }
-        })
+        
+       
     })
 })

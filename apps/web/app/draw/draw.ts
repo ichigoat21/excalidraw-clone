@@ -28,13 +28,14 @@ export async function initDraw(canvas : HTMLCanvasElement, roomId : string, sock
 
             socket.onmessage = (event) => {
                 const message = JSON.parse(event.data);
-
-                if (message.type === "chat"){
-                    const parsedShape = message.message;
-                    existingShape.push(parsedShape)
-                    clearCanvas(existingShape, canvas, ctx)
+        
+                if (message.type == "chat") {
+                    const parsedShape = JSON.parse(message.message)
+                    existingShape.push(parsedShape.shape)
+                    clearCanvas(existingShape, canvas, ctx);
                 }
             }
+
 
             clearCanvas(existingShape, canvas, ctx);
 
@@ -60,14 +61,18 @@ export async function initDraw(canvas : HTMLCanvasElement, roomId : string, sock
                     height
                 }
                 existingShape.push(shape)
-                socket.send(JSON.stringify({
-                    type : "chat",
-                    message : JSON.stringify({
-                        shape
-                    })
-                }))
+                console.log("hi")
 
+
+                socket.send(JSON.stringify({
+                type: "chat",
+                message: JSON.stringify({
+                shape
+                 }),
+                roomId
+              }))
             })
+            
             canvas.addEventListener("mousemove", (e)=> {
                 const width = e.clientX - startX
                 const height = e.clientY - startY
@@ -91,12 +96,16 @@ function clearCanvas(existingShape : Shape[], canvas : HTMLCanvasElement, ctx : 
 }
 
 async function getExistingShapes(roomId : string){
-    const res = await axios.get(`${HTTP_BACKEND}/chats/${roomId}`)
+    const res = await axios.get(`${HTTP_BACKEND}/room/chat/${roomId}`, {
+        headers : {
+            Authorization : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijk5MzQ4NjAwLWJhNjMtNDkyZS04ZWMyLWI1YzYyMjdjZDEzNyIsImlhdCI6MTc2MjA5ODEzM30.Hd5Vfzjo16cygc1Lrfa9kSNiHZJsO7HRD7-_wD-llY4"
+        }
+    })
     const messages = res.data.messages
 
     const shapes = messages.map((x : {message : string})=> {
         const messageData = JSON.parse(x.message)
-        return messageData
+        return messageData.shape
     })
 
     return shapes
