@@ -3,6 +3,8 @@
 import { useEffect, useRef } from "react"
 import { initDraw } from "../draw/draw"
 
+export type Tool = "circle" | "rect" | "pencil";
+
 export default function Canvas({roomId, socket} : {roomId : string, socket : WebSocket}){
     const canvasRef = useRef<HTMLCanvasElement>(null)
 
