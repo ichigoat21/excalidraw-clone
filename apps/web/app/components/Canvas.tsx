@@ -11,6 +11,11 @@ export default function Canvas({roomId, socket} : {roomId : string, socket : Web
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [selectedTool, setSelectedTool] = useState<Tool>("pencil")
 
+    useEffect(()=> {
+      //@ts-ignore
+      window.selectedTool = selectedTool
+    }, [selectedTool])
+
     useEffect(() => {
         if (canvasRef.current) {
           const canvas = canvasRef.current
