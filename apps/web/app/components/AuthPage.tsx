@@ -36,6 +36,16 @@ export default function Login({isSignin} : loginProps) {
       })
       const user = (await response).data.userId
       router.push("/signin")
+    } else {
+      const response = axios.post(`${HTTP_BACKEND}/users/signin`, {
+        email : email,
+        password : password,
+        username : username
+      })
+      const token = (await response).data.token
+      localStorage.setItem("token", token)
+      router.push("/dashboard")
+
     }
   }
     return (
