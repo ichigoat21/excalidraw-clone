@@ -7,6 +7,7 @@ import {Label} from "@/components/ui/label"
 import { useRef } from "react"
 import axios from "axios"
 import { HTTP_BACKEND } from "../config"
+import { useRouter } from "next/navigation"
 
 interface loginProps {
     isSignin : boolean
@@ -17,9 +18,12 @@ export default function Login({isSignin} : loginProps) {
   const usernameRef = useRef<HTMLInputElement | null>(null)
   const passwordRef =  useRef<HTMLInputElement | null>(null)
   const emailRef =  useRef<HTMLInputElement | null>(null)
+  const router = useRouter()
+
 
 
   async function authHandler(){
+  
     const username = usernameRef.current?.value
     const password = passwordRef.current?.value
     const email = emailRef.current?.value
@@ -31,7 +35,7 @@ export default function Login({isSignin} : loginProps) {
         email
       })
       const user = (await response).data.userId
-      alert(user)
+      router.push("/signin")
     }
   }
     return (
