@@ -7,12 +7,13 @@ import { Game } from "../draw/Game";
 
 export type Tool = "circle" | "rect" | "pencil";
 
-export default function Canvas({roomId, socket} : {roomId : string, socket : WebSocket}){
+export default function Canvas({roomId, socket, token} : {roomId : string, socket : WebSocket, token : string}){
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [game, setGame] = useState<Game>()
     const [selectedTool, setSelectedTool] = useState<Tool>("pencil")
 
     useEffect(()=> {
+      console.log(localStorage.getItem("token"))
       game?.setTool(selectedTool);
     }, [selectedTool, game])
 
@@ -21,7 +22,7 @@ export default function Canvas({roomId, socket} : {roomId : string, socket : Web
           const canvas = canvasRef.current
           canvas.width = window.innerWidth
           canvas.height = window.innerHeight
-          const g = new Game(canvas, roomId, socket)
+          const g = new Game(canvas, roomId, socket, token)
           setGame(g)
 
           return () => {
