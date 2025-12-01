@@ -8,14 +8,8 @@ const roomRouter = express.Router()
 
 roomRouter.get("/rooms", async (req, res)=> {
     try {
-        const parsedData = roomSchema.safeParse(req.body)
-        if (!parsedData.success){
-            res.status(403).json({
-                message : 'Invalid Inputs'
-            })
-            return
-        }
         const userId = req.id
+        console.log(userId)
         if (typeof userId !== "string") {
             res.status(403).json({
                 message : 'Sorry something went wrong'

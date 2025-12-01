@@ -34,7 +34,7 @@ wss.on('connection', function connection(ws, request) {
     const url = request.url;
     const queryParams = new URLSearchParams(url?.split('?')[1])
     const token = queryParams.get('token')
-    console.log(token)
+   
     if (!token){
         ws.close()
         return
@@ -61,7 +61,7 @@ wss.on('connection', function connection(ws, request) {
             parsedData = JSON.parse(data)
         }
         
-        console.log(parsedData)
+       
         if(parsedData.type === "join"){
             const user = users.find(u => u.ws === ws)
         }
