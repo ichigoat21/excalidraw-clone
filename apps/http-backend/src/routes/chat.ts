@@ -5,6 +5,39 @@ import { client } from "@repo/db-package/client";
 const roomRouter = express.Router()
 
 
+
+roomRouter.get("/rooms", async (req, res)=> {
+    try {
+        const parsedData = roomSchema.safeParse(req.body)
+        if (!parsedData.success){
+            res.status(403).json({
+                message : 'Invalid Inputs'
+            })
+            return
+        }
+        const userId = req.id
+        if (typeof userId !== "string") {
+            res.status(403).json({
+                message : 'Sorry something went wrong'
+            })
+            return;
+          }
+        const rooms = await client.room.findMany({
+            where : {
+                adminId : userId
+            }
+        }) 
+        res.status(200).json({
+            rooms : rooms
+        })
+    } catch {
+        res.status(411).json({
+            message : 'Error Finding Chats'
+        })
+    }
+})
+
+
 roomRouter.post("/chat", async (req, res)=> {
     try {
         const parsedData = roomSchema.safeParse(req.body)
@@ -16,10 +49,6 @@ roomRouter.post("/chat", async (req, res)=> {
             return
         }
         const userId = req.id
-        console.log(userId)
-        console.log(req.body)
-        console.log(parsedData)
-        console.log(typeof userId !== "string")
     
         if (typeof userId !== "string") {
             res.status(403).json({

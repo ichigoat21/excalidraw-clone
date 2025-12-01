@@ -38,7 +38,7 @@ userRouter.post("/signup", async (req, res)=> {
                 email : email
             }
         })
-        console.log(user)
+      
         res.status(200).json({
             message : 'You are signed up',
             userId : user.id
@@ -55,7 +55,7 @@ userRouter.post("/signin", async (req, res) => {
     try {
       const { email, password } = req.body;
   
-      // find user
+      
       const user = await client.user.findUnique({
         where: { email }
       });
@@ -66,7 +66,6 @@ userRouter.post("/signin", async (req, res) => {
   
       const hashedPassword = user.password;
   
-      // compare plain password with hashed one
       const verified = await bcrypt.compare(password, hashedPassword);
   
       if (!verified) {
@@ -75,7 +74,7 @@ userRouter.post("/signin", async (req, res) => {
         });
       }
   
-      // create token
+      
       const token = jwt.sign({ id: user.id }, JWT_SECRET);
   
       return res.status(200).json({

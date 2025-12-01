@@ -8,12 +8,12 @@ export default function RoomCanvas({ roomId }: { roomId: string }) {
   const [token, setToken] = useState<string | null>(null);
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
-  // 1) Always run
+
   useEffect(() => {
     setToken(localStorage.getItem("token"));
   }, []);
 
-  // 2) Always run — only execute logic if token exists
+
   useEffect(() => {
     if (!token) return;
 
@@ -35,7 +35,7 @@ export default function RoomCanvas({ roomId }: { roomId: string }) {
     };
   }, [token]);
 
-  // ---- UI after ALL hooks ----
+
   if (!token) {
     return <div>Loading token...</div>;
   }
