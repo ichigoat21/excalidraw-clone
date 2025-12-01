@@ -4,6 +4,17 @@
 @custom-variant dark (&:is(.dark *));
 
 @layer base {
+  :root {
+    --brand: 220 85% 55%;      /* Light mode brand color */
+  }
+
+  .dark {
+    --brand: 220 85% 65%;      /* Dark mode brand color */
+  }
+}
+
+
+@layer base {
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
