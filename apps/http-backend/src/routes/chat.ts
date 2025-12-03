@@ -8,7 +8,7 @@ const roomRouter : Router = express.Router()
 
 roomRouter.get("/rooms", async (req, res)=> {
     try {
-        const userId = req.id
+        const userId = (req as any).id
         console.log(userId)
         if (typeof userId !== "string") {
             res.status(403).json({
