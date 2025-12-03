@@ -29,7 +29,7 @@ export default function Login({ isSignin }: loginProps) {
 
     try {
       if (!isSignin) {
-        // SIGNUP
+        
         await axios.post(`${HTTP_BACKEND}/users/signup`, {
           username,
           password,
@@ -37,7 +37,7 @@ export default function Login({ isSignin }: loginProps) {
         });
         router.push("/signin");
       } else {
-        // SIGNIN (no email needed)
+       
         const response = await axios.post(`${HTTP_BACKEND}/users/signin`, {
           username,
           password,

@@ -1,8 +1,8 @@
 import { roomSchema } from "@repo/common/z";
-import express from "express"
+import express, { Router } from "express"
 import { client } from "@repo/db-package/client";
 
-const roomRouter = express.Router()
+const roomRouter : Router = express.Router()
 
 
 
