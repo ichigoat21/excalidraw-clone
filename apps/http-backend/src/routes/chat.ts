@@ -42,7 +42,7 @@ roomRouter.post("/chat", async (req, res)=> {
             })
             return
         }
-        const userId = req.id
+        const userId = (req as any).id
     
         if (typeof userId !== "string") {
             res.status(403).json({
