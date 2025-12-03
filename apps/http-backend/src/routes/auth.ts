@@ -1,4 +1,4 @@
-import express from "express"
+import express, { Router } from "express"
 import jwt from "jsonwebtoken"
 import {JWT_SECRET} from "@repo/config/config"
 import {userSchema} from "@repo/common/z"
@@ -6,7 +6,7 @@ import { client } from "@repo/db-package/client";
 import bcrypt from "bcrypt"
 
 
-const userRouter = express.Router();
+const userRouter : Router = express.Router();
 
 
 
