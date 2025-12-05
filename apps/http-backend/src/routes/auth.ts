@@ -11,45 +11,37 @@ const userRouter : Router = express.Router();
 
 
 
-userRouter.post("/signup", async (req, res)=> {
-    try {
-        console.log("here reached")
-
-        await client.$connect()
-        console.log(" DB Connected")
-
-        const parsedUser = userSchema.safeParse(req.body)
-        if (!parsedUser){
-            res.json(403).json({
-                message : 'Invalid Inputs'
-            })
-            return
-        }
-
-        const username = req.body.username;
-        const password = req.body.password;
-        const email = req.body.email;
-
-        const hashedPassword = await bcrypt.hash(password, 5)
-    
-        const user = await client.user.create({
-            data : {
-                username : username,
-                password : hashedPassword,
-                email : email
-            }
-        })
-      
-        res.status(200).json({
-            message : 'You are signed up',
-            userId : user.id
-        })
-    } catch (e){
-        res.status(403).json({
-            message : 'Sorry Something went wrong'
-        })
+userRouter.post("/signup", async (req, res) => {
+  try {
+    const parsed = userSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(403).json({ message: "Invalid Inputs" });
     }
-})
+
+    const { username, email, password } = parsed.data;
+
+    await client.$connect();
+    console.log("DB Connected");
+
+    const hashedPassword = await bcrypt.hash(password, 5);
+
+    const user = await client.user.create({
+      data: { username, email, password: hashedPassword }
+    });
+
+    return res.status(200).json({
+      message: "You are signed up",
+      userId: user.id
+    });
+
+  } catch (e) {
+    console.error("SIGNUP ERROR:", e);
+    return res.status(403).json({
+      message: "Sorry Something went wrong"
+    });
+  }
+});
+
 
 
 userRouter.post("/signin", async (req, res) => {
