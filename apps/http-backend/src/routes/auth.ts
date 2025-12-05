@@ -13,6 +13,7 @@ const userRouter : Router = express.Router();
 
 userRouter.post("/signup", async (req, res)=> {
     try {
+        console.log("here reached")
 
         await client.$connect()
         console.log(" DB Connected")
