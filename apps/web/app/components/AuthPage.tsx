@@ -29,7 +29,6 @@ export default function Login({ isSignin }: loginProps) {
 
     try {
       if (!isSignin) {
-        
         await axios.post(`${HTTP_BACKEND}/users/signup`, {
           username,
           password,
@@ -37,7 +36,6 @@ export default function Login({ isSignin }: loginProps) {
         });
         router.push("/signin");
       } else {
-       
         const response = await axios.post(`${HTTP_BACKEND}/users/signin`, {
           email,
           password,
@@ -56,17 +54,28 @@ export default function Login({ isSignin }: loginProps) {
       <div className="flex flex-col gap-4 p-6 md:p-8 bg-white rounded-xl shadow-md w-full max-w-sm sm:max-w-md">
         
         <div className="grid w-full gap-4">
-          <div className="grid gap-1">
-            <Label htmlFor="username">{isSignin ? "Username" : "Email"}</Label>
-            <Input ref={isSignin ? usernameRef : emailRef} id="username" />
-          </div>
+          {/* Sign In: Show Email field */}
+          {isSignin && (
+            <div className="grid gap-1">
+              <Label htmlFor="email">Email</Label>
+              <Input ref={emailRef} id="email" type="email" />
+            </div>
+          )}
+
+          {/* Sign Up: Show Username field */}
+          {!isSignin && (
+            <div className="grid gap-1">
+              <Label htmlFor="username">Username</Label>
+              <Input ref={usernameRef} id="username" />
+            </div>
+          )}
 
           <div className="grid gap-1">
             <Label htmlFor="password">Password</Label>
             <Input ref={passwordRef} id="password" type="password" />
           </div>
 
-          
+          {/* Sign Up: Show Email field */}
           {!isSignin && (
             <div className="grid gap-1">
               <Label htmlFor="email">Email</Label>
@@ -90,4 +99,3 @@ export default function Login({ isSignin }: loginProps) {
     </div>
   );
 }
-
