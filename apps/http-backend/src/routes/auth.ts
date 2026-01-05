@@ -47,6 +47,7 @@ userRouter.post("/signup", async (req, res) => {
 userRouter.post("/signin", async (req, res) => {
     try {
       const { email, password } = req.body;
+      console.log(req.body.email)
   
       
       const user = await client.user.findUnique({
