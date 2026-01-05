@@ -39,7 +39,7 @@ export default function Login({ isSignin }: loginProps) {
       } else {
        
         const response = await axios.post(`${HTTP_BACKEND}/users/signin`, {
-          username,
+          email,
           password,
         });
 
@@ -57,8 +57,8 @@ export default function Login({ isSignin }: loginProps) {
         
         <div className="grid w-full gap-4">
           <div className="grid gap-1">
-            <Label htmlFor="username">Username</Label>
-            <Input ref={usernameRef} id="username" />
+            <Label htmlFor="username">{isSignin ? "Username" : "Email"}</Label>
+            <Input ref={isSignin ? usernameRef : emailRef} id="username" />
           </div>
 
           <div className="grid gap-1">
