@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { HeadIcon } from "./components/icon";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -14,9 +15,6 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Canvas",
   description: "Your digital Drawboard",
-  icons: {
-    icon: "/Images.png",
-  },
 };
 
 export default function RootLayout({
